@@ -1,5 +1,0 @@
-Type: Package
-Package: dummy
-Imports: , a
-Depends:    b, , , c
-LinkingTo:

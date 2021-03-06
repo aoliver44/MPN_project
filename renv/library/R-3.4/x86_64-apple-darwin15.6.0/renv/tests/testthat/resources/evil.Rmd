@@ -1,8 +1,0 @@
-
-```{r}
-# this is evil knitr
-library(a)
-```{r}
-library(b)
-```
-
