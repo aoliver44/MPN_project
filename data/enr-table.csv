@@ -1,0 +1,9 @@
+"","Phylum","Gene_significance","Subsystem_level","Subsystem","q_value","Enrichment_odds_ratio"
+"1","bacteroidetes","strong","level1","Carbohydrates",0.206839523616327,15.9474614310762
+"2","bacteroidetes","strong","level2","Monosaccharides",0.00791221026557153,60.6196199641261
+"3","bacteroidetes","strong","level3","D-Galacturonate_and_D-Glucuronate_Utilization",2.1483068121693e-05,485.799382647725
+"4","bacteroidetes","med","level2","Monosaccharides",0.0225746525043471,30.4014788780946
+"5","bacteroidetes","med","level3","D-Galacturonate_and_D-Glucuronate_Utilization",6.40499243416437e-05,242.484273888938
+"6","bacteroidetes","weak","level1","Carbohydrates",0.196235779857956,6.00981690313758
+"7","bacteroidetes","weak","level2","Monosaccharides",0.00105218034736558,23.2604811464235
+"8","bacteroidetes","weak","level3","D-Galacturonate_and_D-Glucuronate_Utilization",8.18796870007696e-06,134.266715311215
