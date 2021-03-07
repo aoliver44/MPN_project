@@ -1,5 +1,5 @@
 
-docker pull rocker/rstudio-stable:3.4.4
+FROM rocker/rstudio-stable:3.4.4
 MAINTAINER Andrew Oliver, UCI
 LABEL version="1.0.0"
 
