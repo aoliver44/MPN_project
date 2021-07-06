@@ -447,18 +447,6 @@
       "Repository": "CRAN",
       "Hash": "4d243a9c10b00589889fe32314ffd902"
     },
-    "gflasso": {
-      "Package": "gflasso",
-      "Version": "0.0.0.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "https://api.github.com",
-      "RemoteRepo": "gflasso",
-      "RemoteUsername": "krisrs1128",
-      "RemoteRef": "master",
-      "RemoteSha": "81bd59749e099d0c9e6e3ac4d0cbf5fdfbd6e7be",
-      "Hash": "87d7834597261aba72516f4ddf218817"
-    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "3.3.0",

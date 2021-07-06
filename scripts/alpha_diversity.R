@@ -40,7 +40,22 @@ evenness <- ggplot(data = alpha_data, aes(x = STATUS, y = Evenness, fill = STATU
   theme_bw() + scale_fill_manual(values=c("turquoise3", "tan3")) + theme(legend.position = "none") 
 
 plot_grid(richness, evenness, ncol = 1, labels = NULL)
+
 # stats
+alpha_data$Individual <- as.factor(alpha_data$Individual)
+alpha_data$rank_richness <- rank(alpha_data$Richness)
+alpha_data$rank_evenness <- rank(alpha_data$Evenness)
+lme.richness <- lme(rank_evenness ~ STATUS + REPLICATE, random = (~1|Individual), data = alpha_data, method = "REML", na.action = na.omit)
+summary(lme.richness)
+
+# check lme assumptions
+# random pattern of residuals (assumption of linearity)
+plot(resid(lme.richness),lme.richness$data$rank_richness)
+alpha_data$Model.F.Res<- residuals(lme.richness) #extracts the residuals and places them in a new column in our original data table
+alpha_data$Abs.Model.F.Res <-abs(alpha_data$Model.F.Res) #creates a new column with the absolute value of the residuals
+alpha_data$Model.F.Res2 <- alpha_data$Abs.Model.F.Res^2 #squares the absolute values of the residuals to provide the more robust estimate
+Levene.Model.F <- lm(Model.F.Res2 ~ Individual, data=alpha_data) #ANOVA of the squared residuals
+anova(Levene.Model.F) #displays the results
 
 # Stats (averaged across individual to get rid of repeated measures)
 # Also because evenness is not normally distributed so gotta use a kruskal
@@ -52,7 +67,11 @@ stats_data <- merge(stats_data, metadata, by.x = "row.names", by.y = "Individual
 stats_data <- stats_data[!duplicated(stats_data$Individual),]
 
 summary(aov(Richness ~ STATUS, data = stats_data))
-kruskal.test(Evenness ~ STATUS, data = stats_data)
+wilcox.test(Evenness ~ STATUS, data = stats_data)
+
+
+# LME
+
 
 ####################### SUBSTATUS ####################### 
 

@@ -29,9 +29,11 @@ plot_data <- merge(metadata, midas_melt, by.x = "Sample", by.y = "variable")
 # Make sure the rel abundance or counts are numeric
 plot_data$value <- as.numeric(plot_data$value)
 midas_summarize <- plot_data %>% 
-  group_by(., Individual, L6, Sample) %>% 
+  group_by(., Individual) %>%
+  mutate(., count = n_distinct(Sample)) %>%
+  group_by(., Individual, L6, Sample, count) %>% 
   filter(str_detect(L6, "g_")) %>% 
-  group_by(., L6, Individual) %>% summarise(., mean_count = sum(value)/3)
+  group_by(., L6, Individual) %>% summarise(., mean_count = mean(value))
 
 midas_summarize <- dcast(Individual ~ L6, data = midas_summarize)
 
@@ -44,11 +46,16 @@ corr_data <- merge(midas_summarize, cytokines, by.x = "Individual", by.y = "Samp
 corr_data <- corr_data %>% select(., -Status) %>% column_to_rownames(var = "Individual")
 cytokine_names <- names(cytokines)[3:14]
 
-cor_test <- corr_data %>%
-  cor_test(method = "spearman") %>% 
-  filter(., var2 %in% cytokine_names, p < 0.05, abs(cor) > 0.1, !(var1 %in% cytokine_names))
-
+corr_data_tnf <- corr_data %>% select(1:145,157)
+cor_test <- corr_data_tnf %>%
+  cor_test(method = "spearman", vars = "TNFa")
+cor_test <- cor_test %>% filter(., cor != "")
+tnf_p_values1 <- as.data.frame(p.adjust(cor_test$p, method = "fdr"))
+tnf_p_values2 <- cbind(tnf_p_values1, cor_test) %>% arrange(., cor)
+colnames(tnf_p_values2)[1] <- "padjust"
+  
 ggplot(data = cor_test) + aes(var1, var2, fill = cor) + geom_tile() + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+ggplot(data = corr_data) + aes(x = g__Parabacteroides, y = TNFa) + geom_point()
 
 # RDA
 community <- corr_data %>% select(., 1:95)

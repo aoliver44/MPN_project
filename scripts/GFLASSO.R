@@ -34,18 +34,18 @@ cytokines_mpn$sample <- NULL
 DS <- cor(cytokines_mpn, method = "spearman")
 corrplot(DS)
 
-CV <- readRDS(file = "CV_gflasso.rds")
+#CV <- readRDS(file = "CV_gflasso.rds")
 #system.time(CV <- cv_gflasso(X = scale(mpn_otu), Y = scale(cytokines_mpn), R = DS, nCores = 4, 
 #                             additionalOpts = list(delta_conv = 1e-5, iter_max = 1e5)))
 
-cv_plot_gflasso(CV)
-
-gfMod <- readRDS(file = "gfMod.rds")
+# cv_plot_gflasso(CV)
+# 
 #gfMod <- gflasso(X = scale(mpn_otu), Y = scale(cytokines_mpn), R = DS, opts = list(lambda = CV$optimal$lambda,
 #                                                                    gamma = CV$optimal$gamma, 
 #                                                                    delta_conv = 1e-5,
 #                                                                    iter_max = 1e5))
 
+gfMod <- readRDS(file = "gfMod.rds")
 colnames(gfMod$B) <- colnames(cytokines_mpn)
 Lasso_data <- gfMod$B[abs(rowSums(gfMod$B)) > 0.3, ]
 rownames(Lasso_data) <- sapply(strsplit(rownames(Lasso_data), '_g_'), getElement, 2)

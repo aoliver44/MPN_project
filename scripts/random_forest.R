@@ -18,9 +18,9 @@ library(nlme)
 # run random forest on health statys
 rfp_data_raw <- otu_merged %>% select(., 6, 32:NCOL(otu_merged)) %>% 
   select_if(negate(function(col) is.numeric(col) && sum(col) < 10)) %>% 
-  clean_names()
+  clean_names() 
 
-RFP <- rfPermute(as.factor(status) ~ ., 
+RFP <- rfPermute(as.factor(medication) ~ ., 
                  data = rfp_data_raw, proximity = TRUE, 
                  importance = TRUE, parallel = 6, na.action = na.omit)
 
@@ -52,7 +52,22 @@ ggplot(data = otu_merged, aes(x = STATUS, y = `k__Bacteria;p__Firmicutes;c__Clos
        y = 'Phascolarctobacterium\n(OTU 64) reads') +
   annotate("text", x=2, y=60, label= "Kruskal-Wallis: p < 0.05", size = 3) +
   theme_bw() + scale_fill_manual(values=c("turquoise3", "tan3")) + theme(legend.position = "none") 
-
+##################################################
+# medication:
+# k_bacteria_p_firmicutes_c_clostridia_o_clostridiales_f_lachnospiraceae_g_ruminococcus_s_gnavus_1
+# k_bacteria_p_firmicutes_c_clostridia_o_clostridiales_f_clostridiales_g_clostridiales_s_clostridiales_26
+# k_bacteria_p_firmicutes_c_clostridia_o_clostridiales_f_ruminococcaceae_g_ruminococcaceae_s_ruminococcaceae_4
+# k_bacteria_p_firmicutes_c_clostridia_o_clostridiales_f_lachnospiraceae_g_coprococcus_s_coprococcus_8
+# 
+# ggplot(data = rfp_data_raw, aes(x = medication, y = `k_bacteria_p_firmicutes_c_clostridia_o_clostridiales_f_lachnospiraceae_g_coprococcus_s_coprococcus_8`, fill = medication)) +
+#   geom_boxplot(outlier.size = 0, alpha = 0.3) + 
+#   geom_point(pch = 21, position = position_jitterdodge()) +
+#   labs(x = '',
+#        y = 'ruminococcus_s_gnavus') +
+#   #annotate("text", x=2, y=60, label= "Kruskal-Wallis: p < 0.05", size = 3) +
+#   stat_compare_means() +
+#   theme_bw() + scale_fill_manual(values=c("turquoise3", "tan3", "red")) + theme(legend.position = "none") 
+###################################################
 
 # linear mixed effects model with individual as repeated measure, data not normally distributed
 tmp <- otu_merged
