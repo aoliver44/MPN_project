@@ -57,3 +57,12 @@ unzip taxonomy.qza
 # cd into that directory, then the data folder. Should be taxonomy.tsv in there.
 # Merge by featureID in Bash or R to get final OTU table
 ```
+
+## Using docker for this image
+NOTE: I could not get gflasso to compile into this image for some reason and i got tired of trying. I left the code commented in the script, and the .rds files that get loaded in have what was generated from those commands. 
+
+```
+# build the docker image
+docker docker build -t mpn_project Dockerfile
+docker run --rm -it -p 8787:8787 -e PASSWORD=yourpasswordhere -v /local/path/to/scripts/:/home/rstudio/scripts -v /local/path/to/data/:/home/rstudio/data mpn_project
+```
