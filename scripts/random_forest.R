@@ -20,7 +20,11 @@ rfp_data_raw <- otu_merged %>% select(., 6, 32:NCOL(otu_merged)) %>%
   select_if(negate(function(col) is.numeric(col) && sum(col) < 10)) %>% 
   clean_names() 
 
-RFP <- rfPermute(as.factor(medication) ~ ., 
+rfp_data_raw_mean <- rfp_data_raw %>%
+  group_by(., individual, status) %>%
+  summarise_all(., funs(mean)) %>% ungroup() %>%select(., -individual)
+
+RFP <- rfPermute(as.factor(status) ~ ., 
                  data = rfp_data_raw, proximity = TRUE, 
                  importance = TRUE, parallel = 6, na.action = na.omit)
 

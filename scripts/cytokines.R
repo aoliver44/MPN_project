@@ -16,18 +16,18 @@ metadata <- read.csv("metadata_2.14.19.txt", check.names = F, sep = "\t")
 
 cytokines <- read.csv("Cytokines.txt", sep = "\t")
 # remove outliers (cytokine readings wayy too high)
-cytokines <- cytokines %>% filter(., Sample != "124", Sample != "65") %>% replace(is.na(.), 0)
+cytokines <- cytokines %>% filter(., Sample != "124", Sample != "65", Sample != "35") %>% replace(is.na(.), 0)
 cytokine_rfp <- select(cytokines, Status, 3:14)
-cytokines <- cytokines %>% filter(., Sample %in% metadata$Individual)
+#cytokines <- cytokines %>% filter(., Sample %in% metadata$Individual)
 #cytokines[, 3:14] <- apply(cytokines[, 3:14], 1, scale)
 
-color_row <- as.vector(cytokines$Status)
+color_row <- as.vector(cytokine_rfp$Status)
 color_row <- str_replace(color_row, "HEALTHY", "blue")
 color_row <- str_replace(color_row, "MPN", "orange")
 
 # Generate heatmap of cytokine abundance
-pheatmap(as.matrix(cytokines[, 3:14]),annotation_names_row = cytokines$Sample)
-heatmap(as.matrix(cytokines[, 3:14]), scale = "column", RowSideColors = color_row, col=viridis(60), margins = c(3.5,18), labRow = F)
+pheatmap(as.matrix(cytokine_rfp[, 2:13]),annotation_names_row = cytokine_rfp$Sample)
+heatmap(as.matrix(cytokine_rfp[, 2:13]), scale = "column", RowSideColors = color_row, col=viridis(60), margins = c(3.5,18), labRow = F)
       
 
 # Run Random Forest on cytokines
@@ -47,10 +47,8 @@ plot(RFP, alpha = 0.05)
 
 # plot raw cytokine boxplots to support RF 
 library(reshape2)
-tmp <- as.data.frame(RFP$importance)
-tmp <- tmp %>% arrange(., desc(MeanDecreaseAccuracy))
 cytokine_rfp_melt <- melt(cytokine_rfp)
-cytokine_rfp_melt$variable <- factor(cytokine_rfp_melt$variable, levels= rownames(tmp))
+cytokine_rfp_melt$variable <- factor(cytokine_rfp_melt$variable, levels= c("TNFa", "IL6", "GRO", "IFNg", "IL10", "IL8", "IL17a", "IP10", "IL1RA", "IL1a", "IL1b", "IFNa2"))
 
 ggplot(data = cytokine_rfp_melt, aes(x = Status, y = log2(value))) +
   geom_boxplot(aes(fill = Status), outlier.colour = "white") + 
@@ -63,6 +61,5 @@ ggplot(data = cytokine_rfp_melt, aes(x = Status, y = log2(value))) +
         panel.border = element_rect(colour = "black", fill = NA), 
         #axis.text.y = element_blank(), axis.ticks.y = element_blank(),
         legend.position="none",
-        axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.spacing = unit(0, "lines")) #+
-  stat_compare_means(method = "kruskal.test")
+        axis.text.x = element_blank(), axis.ticks.x = element_blank(), panel.spacing = unit(0, "lines")) + stat_compare_means(method = "kruskal.test")
 
