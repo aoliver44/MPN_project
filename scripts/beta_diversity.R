@@ -16,7 +16,7 @@ library(janitor)
 set.seed(999)
 
 # Sequence Data
-OTU_table <- otu_merged %>% filter(., SUBSTATUS != "")
+OTU_table <- otu_merged #%>% filter(., SUBSTATUS != "")
 OTU_table <- OTU_table %>% select(., 1,32:NCOL(OTU_table)) %>% column_to_rownames(., var = "Sample") %>%
   clean_names()
 
@@ -24,6 +24,7 @@ OTU_table <- OTU_table %>% select(., 1,32:NCOL(OTU_table)) %>% column_to_rowname
 beta.mds <- metaMDS(OTU_table, distance="bray", k=2)
 
 stressplot(beta.mds)
+beta.mds$stress
 
 sites <- as.data.frame(scores(beta.mds, display = "sites"))
 species <- as.data.frame(scores(beta.mds, display = "species"))
@@ -42,8 +43,11 @@ cb_7 <- c("#d22154",
 ggplot(data = nmds.sites, aes(NMDS1, NMDS2, color = SUBSTATUS)) + 
   geom_point(aes(shape = SUBSTATUS), alpha = 0.7, size = 2) +
   stat_ellipse()
-
-
+## Healthy vs subtypes 
+ggplot(data = nmds.sites, aes(NMDS1, NMDS2, color = SUBSTATUS, label = Individual)) + 
+  geom_text(color = "black") +
+  geom_point(aes(shape = SUBSTATUS), alpha = 0.7, size = 2, ) +
+  stat_ellipse() + ggsci::scale_color_npg() + theme_bw()
   
 # statistics: permanova + pairwise
 # Thank you Pedro Martinez Arbizu
